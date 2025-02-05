@@ -22,3 +22,8 @@
   padding: 16px;
   text-align: center;
 }
+
+.scroll-container {
+  max-height: 400px; /* Vous pouvez ajuster la hauteur selon vos besoins */
+  overflow-y: scroll;
+}
