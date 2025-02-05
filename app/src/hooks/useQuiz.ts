@@ -1,9 +1,7 @@
-// app/src/hooks/useQuiz.ts
-
 import { useState, useEffect } from "react";
 
-// Remplace par l'URL de ton propre backend Express
-const API_URL = "http://localhost:5000/api/quizz"; 
+// Changer l'API_URL pour utiliser l'API locale
+const API_URL = "http://localhost:3000/api/quiz"; // Remplace par ton API locale
 
 export function useQuiz() {
   const [questions, setQuestions] = useState<any[]>([]);
@@ -17,7 +15,14 @@ export function useQuiz() {
       try {
         const response = await fetch(API_URL);
         const data = await response.json();
-        setQuestions(data);
+        setQuestions(
+          data.map((q: any) => ({
+            question: q.question,
+            answer: q.answer,  // Remplacer 'réponse' par 'answer'
+            options: [...q.options], // Les options sont déjà sous forme de tableau
+            difficulty: q.difficulty,
+          }))
+        );
         setLoading(false);
       } catch (error) {
         console.error("Erreur lors du chargement des questions :", error);
@@ -26,13 +31,13 @@ export function useQuiz() {
     }
 
     fetchQuestions();
-  }, []);
+  }, []); // Cette partie ne change pas
 
   function handleAnswer(answer: string) {
     if (selectedAnswer) return; // Empêche de changer de réponse après avoir cliqué une fois
 
     setSelectedAnswer(answer);
-    if (answer === questions[currentIndex].réponse) {
+    if (answer === questions[currentIndex].answer) {  // Utilise 'answer' pour la bonne réponse
       setScore((prev) => prev + 1);
     }
   }
