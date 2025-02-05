@@ -5,6 +5,9 @@ import appConfig from "./config/app";
 import { ExceptionsHandler } from "./middlewares/exceptions.handler";
 import { UnknownRoutesHandler } from "./middlewares/unknownRoutes.handler";
 
+// Importer les routes du quiz
+import quizRoutes from './routes/quiz';
+
 dotenv.config();
 
 /**
@@ -22,17 +25,18 @@ app.use(express.json());
 /**
  * On dit à Express que l'on souhaite autoriser tous les noms de domaines
  * à faire des requêtes sur notre API.
- * /!\ Attention en production, on souhaiterai limiter cela aux noms de domaines autorisées à faire des requêtes sur notre API.
- * @see https://w3schools.tech/fr/tutorial/html/html_cors
  */
 app.use(cors());
 
 /**
- * Homepage (uniquement necessaire pour cette demo)
+ * Route Homepage (uniquement nécessaire pour cette démo)
  */
 app.get("/", (request, response) => {
   response.send("🏠 Bienvenue sur votre Application backend API :)");
 });
+
+// ✅ Ajouter ici la route du quiz
+app.use("/api", quizRoutes); // <-- Ajouter cette ligne pour lier les routes du quiz
 
 app.use("/pokedex", function (req, res, next) {});
 
@@ -43,12 +47,11 @@ app.all("*", UnknownRoutesHandler);
 
 /**
  * Gestion des erreurs
- * /!\ Cela doit être le dernier `app.use`
  */
 app.use(ExceptionsHandler);
 
 /**
- * On demande à Express d'ecouter les requêtes sur le port défini dans la config
+ * On demande à Express d'écouter les requêtes sur le port défini dans la config
  */
 app.listen(appConfig().port, () =>
   console.log(
