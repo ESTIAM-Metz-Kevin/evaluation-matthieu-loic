@@ -2,23 +2,25 @@ import cors from "cors";
 import express from "express";
 import dotenv from "dotenv";
 import appConfig from "./config/app";
+
 import { ExceptionsHandler } from "./middlewares/exceptions.handler";
 import { UnknownRoutesHandler } from "./middlewares/unknownRoutes.handler";
 
 // Importer les routes du quiz
-import quizRoutes from './routes/quiz';
+import quizRoutes from "./routes/quiz";
+import gameRoutes from "./routes/gameRoutes";
+
+
 
 dotenv.config();
 
 /**
- * On créé une nouvelle "application" express
+ * On crée une nouvelle "application" express
  */
 const app = express();
 
 /**
  * On dit à Express que l'on souhaite parser le body des requêtes en JSON
- *
- * @example app.post('/', (req) => req.body.prop)
  */
 app.use(express.json());
 
@@ -35,10 +37,8 @@ app.get("/", (request, response) => {
   response.send("🏠 Bienvenue sur votre Application backend API :)");
 });
 
-// ✅ Ajouter ici la route du quiz
-app.use("/api", quizRoutes); // <-- Ajouter cette ligne pour lier les routes du quiz
-
-app.use("/pokedex", function (req, res, next) {});
+app.use("/api", quizRoutes);
+app.use("/api", gameRoutes);
 
 /**
  * Pour toutes les autres routes non définies, on retourne une erreur
@@ -54,7 +54,5 @@ app.use(ExceptionsHandler);
  * On demande à Express d'écouter les requêtes sur le port défini dans la config
  */
 app.listen(appConfig().port, () =>
-  console.log(
-    `🚀 Server has started and listening on port ${appConfig().port}.`
-  )
+  console.log(`🚀 Server has started and listening on port ${appConfig().port}.`)
 );

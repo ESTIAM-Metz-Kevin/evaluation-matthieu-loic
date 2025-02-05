@@ -1,0 +1,37 @@
+/* Couleurs pour le Top 3 */
+.first-place {
+    background-color: gold;
+    color: black;
+  }
+  
+  .second-place {
+    background-color: silver;
+    color: black;
+  }
+  
+  .third-place {
+    background-color: #cd7f32; /* Bronze */
+    color: white;
+  }
+  
+  /* Style des rangs (#1, #2, #3) */
+  td {
+    text-align: center;
+  }
+  
+  td:first-child {
+    font-weight: bold;
+  }
+  
+  .first-place td:first-child {
+    font-size: 1.5rem;  /* Plus grand pour la 1ère place */
+  }
+  
+  .second-place td:first-child {
+    font-size: 1.25rem;  /* Un peu plus petit pour la 2ème place */
+  }
+  
+  .third-place td:first-child {
+    font-size: 1.1rem;   /* Encore plus petit pour la 3ème place */
+  }
+  

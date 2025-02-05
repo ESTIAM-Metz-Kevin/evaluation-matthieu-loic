@@ -1,4 +1,7 @@
-const fetch = globalThis.fetch; // Si tu es sur Node 18+, sinon installe node-fetch
+import { Request, Response } from 'express';
+
+// Fonction pour récupérer les questions depuis l'API externe
+const fetch = globalThis.fetch; 
 
 const API_URL = 'https://quizzapi.jomoreschi.fr/api/v1/quiz?limit=10&category=jeux_videos';
 
@@ -11,8 +14,6 @@ export const fetchQuestions = async () => {
     }
 
     const text = await response.text(); // Récupérer la réponse brute
-    console.log("📩 Réponse brute de l'API :", text); // Ajout d'un log pour debug
-
     const data = JSON.parse(text);
 
     return data.quizzes.map((quiz: any) => ({
