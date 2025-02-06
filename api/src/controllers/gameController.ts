@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
 import { createGame, updateScore, getGames } from '../models/game.models';
+import fs from 'fs';
+import path from 'path';
 
 export const startGame = (req: Request, res: Response) => {
   const { player } = req.body;
@@ -18,6 +20,7 @@ export const updateGameScore = (req: Request, res: Response) => {
 
 res.status(200).json(updatedGame);
 };
+
 
 export const listGames = (req: Request, res: Response) => {
   res.status(200).json(getGames());

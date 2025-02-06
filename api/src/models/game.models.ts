@@ -33,6 +33,7 @@ export const createGame = (player: string) => {
   return newGame;
 };
 
+
 // Mettre à jour le score d'une partie
 export const updateScore = (id: number, score: number) => {
   const games = readData();

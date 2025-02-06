@@ -1,44 +1,48 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+import "./Home.css";
 
 function Home() {
-  const navigate = useNavigate();
-  const [pseudo, setPseudo] = useState("");
-  const [games, setGames] = useState<any[]>([]);
+  const navigate = useNavigate(); // Hook pour la navigation entre les pages
+  const [pseudo, setPseudo] = useState(""); // État pour stocker le pseudo du joueur
+  const [games, setGames] = useState<any[]>([]); // État pour stocker l'historique des parties
 
+  // useEffect s'exécute une seule fois au montage du composant pour récupérer l'historique
   useEffect(() => {
     async function fetchGames() {
       try {
-        const response = await fetch("http://localhost:3000/api/game/history");
+        const response = await fetch("http://localhost:3000/api/game/history"); // Récupère les parties depuis l'API
         const data = await response.json();
-        // Trie les parties par score décroissant
+        // Trie les parties par score décroissant (du plus grand au plus petit)
         data.sort((a: any, b: any) => b.score - a.score);
-        setGames(data);
+        setGames(data); // Met à jour l'état avec les parties triées
       } catch (error) {
         console.error("Erreur lors du chargement des parties :", error);
       }
     }
     fetchGames();
-  }, []);
+  }, []); // Dépendance vide → l'effet s'exécute uniquement au montage
 
+  // Fonction qui démarre une nouvelle partie en envoyant le pseudo du joueur à l'API
   const startGame = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!pseudo.trim()) return;
+    e.preventDefault(); // Empêche le rechargement de la page au submit
+    if (!pseudo.trim()) return; // Vérifie que le pseudo n'est pas vide
 
     const response = await fetch("http://localhost:3000/api/game/start", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ player: pseudo }),
+      body: JSON.stringify({ player: pseudo }), // Envoie le pseudo en JSON
     });
 
     const data = await response.json();
-    navigate(`/game?id=${data.id}&player=${pseudo}`);
+    navigate(`/game?id=${data.id}&player=${pseudo}`); // Redirige vers la page du jeu avec l'ID de la partie
   };
 
   return (
     <div>
       <h2 className="font-bold">Historique des parties</h2>
 
+      {/* Conteneur avec un scroll vertical si plus de 10 joueurs */}
       <div className="overflow-x-auto mb-14" style={{ maxHeight: "400px", overflowY: "scroll" }}>
         <table className="table">
           <thead>
@@ -51,14 +55,14 @@ function Home() {
           </thead>
           <tbody>
             {games.slice(0, 10).map((game, index) => {
-              // Gère la classe pour afficher la couleur du top 3
+              // Détermine la classe CSS pour les 3 premiers (or, argent, bronze)
               const placeClass = 
                 index === 0 ? "first-place" :
                 index === 1 ? "second-place" :
                 index === 2 ? "third-place" :
                 "";
 
-              // Définir la taille du texte pour les positions 1, 2, et 3
+              // Ajuste la taille du texte pour les positions 1, 2 et 3
               const rankStyle = 
                 index === 0 ? { fontSize: "1.5rem", fontWeight: "bold" } :
                 index === 1 ? { fontSize: "1.25rem", fontWeight: "bold" } :
@@ -67,10 +71,10 @@ function Home() {
 
               return (
                 <tr key={game.id} className={placeClass}>
-                  <td style={rankStyle}>#{index + 1}</td>
-                  <td>{game.player}</td>
-                  <td>{game.score}/10</td>
-                  <td>{new Date(game.date).toLocaleString()}</td>
+                  <td style={rankStyle}>#{index + 1}</td> {/* Affiche le rang du joueur */}
+                  <td>{game.player}</td> {/* Affiche le pseudo du joueur */}
+                  <td>{game.score}/10</td> {/* Affiche le score du joueur */}
+                  <td>{new Date(game.date).toLocaleString()}</td> {/* Affiche la date formatée */}
                 </tr>
               );
             })}
@@ -78,6 +82,7 @@ function Home() {
         </table>
       </div>
 
+      {/* Formulaire pour entrer son pseudo et commencer une partie */}
       <form className="join" onSubmit={startGame}>
         <input
           className="input input-bordered join-item"
